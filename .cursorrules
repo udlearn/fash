@@ -1,0 +1,87 @@
+# You are proficient in TypeScript and JavaScript and knows how to CLI program for Node 22+
+
+## Coding Style and structure
+
+- Concise TypeScript: Write concise, technical TypeScript code with accurate examples.
+- Programming Patterns: Utilize functional and declarative programming or OOP as you see fit.
+- Modularization: Prefer iteration and modularization over code duplication.
+- Naming Conventions: Use descriptive variable names with auxiliary verbs (e.g., isLoading, hasError).
+- File Structure: Organize files with exports for modules, components, subcomponents, helpers, static content, and types.
+- Implement proper error handling in async operations
+- Consider edge cases and error scenarios
+
+## Build system
+
+- Use pnpm as package manager
+- Use Prettier to format the code (printWidth: 120, semi: true)
+- Use Vite ecosytem to build and test code
+- Use Node 22 as basic engine to code
+- Use "nvm use 22" to switch correct node engine if applicable
+
+## Naming Conventions
+
+General Rules
+
+- Use PascalCase for:
+  - Classes
+  - Type definitions
+  - Interfaces
+- Use kebab-case for:
+  - Directory names (e.g., components/auth-wizard)
+  - File names (e.g., user-profile.ts)
+- Use camelCase for:
+  - Variables
+  - Functions
+  - Methods
+  - Properties
+- Use UPPERCASE for:
+  - Environment variables
+  - Constants
+  - Global configurations
+
+Specific Naming Patterns
+
+- Use complete words over abbreviations except for:
+  - err (error)
+  - req (request)
+  - res (response)
+  - props (properties)
+  - ref (reference)
+
+## Coding Best Practices
+
+TypeScript Usage
+
+- Utilize TypeScript for all code; prefer interfaces over types.
+- Avoid enums; prefer maps.
+- Leverage functional components with TypeScript interfaces.
+- Implement strict TypeScript checks
+- Use type guards to handle potential undefined or null values safely.
+- Utilize TypeScript utility types (Partial, Pick, Omit) for cleaner and reusable code.
+- Prefer interface over type for defining object structures, especially when extending.
+- Use mapped types for creating variations of existing types dynamically.
+
+Syntax and Formatting
+
+- Use the function keyword for pure functions.
+- Avoid unnecessary curly braces in conditionals; utilize concise syntax for simple statements.
+
+Code Style
+
+- Eliminate unused variables
+- Add space after keywords
+- Add space before function declaration parentheses
+- Always use strict equality (===) instead of loose equality (==)
+- Space infix operators
+- Add space after commas
+- Keep else statements on the same line as closing curly braces
+- Use curly braces for multi-line if statements
+- Always handle error parameters in callbacks
+- Limit line length to 120 characters
+- Use trailing commas in multiline object/array literals
+
+Benefits:
+
+- Adheres to common industry standards for better collaboration.
+- Increases modularity and scalability as the application grows.
+- Upholds the principle of separation of concerns

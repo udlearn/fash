@@ -1,0 +1,51 @@
+{
+  "name": "@udlearn/fash",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Obfuscate file names to make them more difficult to guess",
+  "author": "Ralph Florent",
+  "license": "MIT",
+  "main": "dist/index.js",
+  "files": ["dist"],
+  "repository": "udlearn/fash",
+  "keywords": [
+    "cli",
+    "security",
+    "hashing",
+    "file-encryption",
+    "obfuscation"
+  ],
+  "bin": {
+    "fash": "dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsx src/index.ts",
+    "start": "node dist/index.js",
+    "test": "vitest run",
+    "format": "prettier --write \"src/**/*.{ts,js}\"",
+    "lint": "eslint src/**/*.ts"
+  },
+  "dependencies": {
+    "chalk": "^5.3.0",
+    "commander": "^11.1.0",
+    "fs-extra": "^11.2.0",
+    "inquirer": "^9.2.12"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.38.0",
+    "@types/fs-extra": "^11.0.4",
+    "@types/inquirer": "^9.0.7",
+    "@types/node": "^20.10.0",
+    "@typescript-eslint/eslint-plugin": "^8.46.1",
+    "@typescript-eslint/parser": "^8.46.1",
+    "eslint": "^9.38.0",
+    "prettier": "^3.1.0",
+    "tsx": "^4.6.0",
+    "typescript": "^5.3.0",
+    "vitest": "^1.0.0"
+  },
+  "engines": {
+    "node": ">=22.0.0"
+  }
+}
