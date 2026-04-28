@@ -12,13 +12,19 @@ export function createInitCommand(): Command {
     .option('-e, --exclude <patterns...>', 'Exclude patterns (glob patterns)')
     .action(async (options) => {
       try {
+        const algorithm = options.algorithm || 'sha256';
+        if (!['md5', 'sha1', 'sha256'].includes(algorithm)) {
+          console.error(chalk.red('Invalid algorithm. Must be one of: md5, sha1, sha256'));
+          process.exit(1);
+        }
+
         console.log(chalk.blue('Initializing fash...'));
 
         const configManager = new ConfigManager(process.cwd());
         await configManager.initialize();
 
         const config: FashConfig = {
-          algorithm: options.algorithm || 'sha256',
+          algorithm,
           exclude: options.exclude || [],
         };
 

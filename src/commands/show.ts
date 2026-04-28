@@ -66,6 +66,8 @@ export function createShowCommand(): Command {
 
         console.log(chalk.gray(`\nTotal items: ${fashMap.mappings.length}`));
         console.log(chalk.gray(`Created: ${new Date(fashMap.created).toLocaleString()}`));
+
+        await configManager.addLogEntry('show', `Viewed ${fashMap.mappings.length} items`);
       } catch (err) {
         console.error(chalk.red('Error showing items:'), err);
         process.exit(1);

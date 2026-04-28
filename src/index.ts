@@ -4,7 +4,15 @@ import { Command } from 'commander';
 import { readFileSync } from 'fs';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
-import { InitCommand, ConfigCommand, ShowCommand, CommitCommand, UndoCommand } from './commands/index.js';
+import {
+  InitCommand,
+  ConfigCommand,
+  ShowCommand,
+  CommitCommand,
+  UndoCommand,
+  StatusCommand,
+  LogCommand,
+} from './commands/index.js';
 
 // Read version from package.json
 const __filename = fileURLToPath(import.meta.url);
@@ -21,9 +29,11 @@ program
 // Add commands
 program.addCommand(InitCommand());
 program.addCommand(ConfigCommand());
+program.addCommand(StatusCommand());
 program.addCommand(ShowCommand());
 program.addCommand(CommitCommand());
 program.addCommand(UndoCommand());
+program.addCommand(LogCommand());
 
 // Parse arguments
 program.parse();

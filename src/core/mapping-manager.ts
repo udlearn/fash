@@ -91,77 +91,88 @@ export class MappingManager {
 
   async applyMappings(fashMap: FashMap): Promise<void> {
     const workingMappings = fashMap.mappings.map((m) => ({ ...m }));
+    const completed: Array<{ from: string; to: string }> = [];
 
     // Directories first, shallow to deep
     const directoryMappings = workingMappings
       .filter((m) => m.isDirectory)
       .sort((a, b) => a.originalPath.split(path.sep).length - b.originalPath.split(path.sep).length);
 
-    for (const mapping of directoryMappings) {
-      try {
+    try {
+      for (const mapping of directoryMappings) {
         await FileSystemUtils.renameFile(mapping.originalPath, mapping.hashedPath);
+        completed.push({ from: mapping.originalPath, to: mapping.hashedPath });
         console.log(`Renamed: ${mapping.originalPath} -> ${mapping.hashedPath}`);
 
-        // After renaming a directory, update originalPath of nested items so
-        // they reference the new on-disk location for subsequent renames.
         const prefix = mapping.originalPath + path.sep;
         for (const other of workingMappings) {
           if (other.originalPath.startsWith(prefix)) {
             other.originalPath = path.join(mapping.hashedPath, path.relative(mapping.originalPath, other.originalPath));
           }
         }
-      } catch (err) {
-        console.error(`Failed to rename ${mapping.originalPath}:`, err);
       }
-    }
 
-    const fileMappings = workingMappings.filter((m) => !m.isDirectory);
-    for (const mapping of fileMappings) {
-      try {
+      const fileMappings = workingMappings.filter((m) => !m.isDirectory);
+      for (const mapping of fileMappings) {
         await FileSystemUtils.renameFile(mapping.originalPath, mapping.hashedPath);
+        completed.push({ from: mapping.originalPath, to: mapping.hashedPath });
         console.log(`Renamed: ${mapping.originalPath} -> ${mapping.hashedPath}`);
-      } catch (err) {
-        console.error(`Failed to rename ${mapping.originalPath}:`, err);
       }
+    } catch (err) {
+      console.error(`Rename failed, rolling back ${completed.length} completed rename(s)...`);
+      await this.rollback(completed);
+      throw new Error(`Commit aborted and rolled back: ${err}`);
     }
   }
 
   async restoreMappings(fashMap: FashMap): Promise<void> {
-    // Sort all mappings by depth (deepest first) so we restore from bottom up
     const sortedMappings = [...fashMap.mappings].sort((a, b) => {
       const aDepth = a.hashedPath.split(path.sep).length;
       const bDepth = b.hashedPath.split(path.sep).length;
-      // Deepest first, and files before directories at same depth
       if (aDepth !== bDepth) return bDepth - aDepth;
       return a.isDirectory ? 1 : -1;
     });
 
-    // Process each mapping in order
-    for (const mapping of sortedMappings) {
-      try {
-        if (await fs.pathExists(mapping.hashedPath)) {
-          // Restore to original name within the current parent directory
-          const currentDir = path.dirname(mapping.hashedPath);
-          const originalName = path.basename(mapping.originalPath);
-          const targetPath = path.join(currentDir, originalName);
+    const completed: Array<{ from: string; to: string }> = [];
 
-          await FileSystemUtils.renameFile(mapping.hashedPath, targetPath);
-          console.log(`Restored: ${mapping.hashedPath} -> ${targetPath}`);
+    try {
+      for (const mapping of sortedMappings) {
+        if (!(await fs.pathExists(mapping.hashedPath))) {
+          console.log(`Skipped: ${mapping.hashedPath} (not found - may already be restored)`);
+          continue;
+        }
 
-          // Update all subsequent mappings that are inside this directory
-          if (mapping.isDirectory) {
-            for (const otherMapping of sortedMappings) {
-              if (otherMapping.hashedPath.startsWith(mapping.hashedPath + path.sep)) {
-                const relativePath = path.relative(mapping.hashedPath, otherMapping.hashedPath);
-                otherMapping.hashedPath = path.join(targetPath, relativePath);
-              }
+        const currentDir = path.dirname(mapping.hashedPath);
+        const originalName = path.basename(mapping.originalPath);
+        const targetPath = path.join(currentDir, originalName);
+
+        await FileSystemUtils.renameFile(mapping.hashedPath, targetPath);
+        completed.push({ from: mapping.hashedPath, to: targetPath });
+        console.log(`Restored: ${mapping.hashedPath} -> ${targetPath}`);
+
+        if (mapping.isDirectory) {
+          for (const otherMapping of sortedMappings) {
+            if (otherMapping.hashedPath.startsWith(mapping.hashedPath + path.sep)) {
+              const relativePath = path.relative(mapping.hashedPath, otherMapping.hashedPath);
+              otherMapping.hashedPath = path.join(targetPath, relativePath);
             }
           }
-        } else {
-          console.log(`Skipped: ${mapping.hashedPath} (not found - may already be restored)`);
         }
-      } catch (err) {
-        console.error(`Failed to restore ${mapping.hashedPath}:`, err);
+      }
+    } catch (err) {
+      console.error(`Restore failed, rolling back ${completed.length} completed rename(s)...`);
+      await this.rollback(completed);
+      throw new Error(`Undo aborted and rolled back: ${err}`);
+    }
+  }
+
+  private async rollback(completed: Array<{ from: string; to: string }>): Promise<void> {
+    for (const { from, to } of completed.reverse()) {
+      try {
+        await FileSystemUtils.renameFile(to, from);
+        console.log(`Rolled back: ${to} -> ${from}`);
+      } catch (rollbackErr) {
+        console.error(`Rollback failed for ${to} -> ${from}:`, rollbackErr);
       }
     }
   }
