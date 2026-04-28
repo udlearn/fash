@@ -18,8 +18,22 @@ export interface FashMap {
   config: FashConfig;
 }
 
+export type FashAction =
+  | 'init'
+  | 'config'
+  | 'show'
+  | 'commit'
+  | 'undo'
+  | 'status'
+  | 'log'
+  | 'rekey'
+  | 'import'
+  | 'export'
+  | 'reset'
+  | 'destroy';
+
 export interface FashLog {
-  action: 'init' | 'config' | 'show' | 'commit' | 'undo' | 'status' | 'log' | 'rekey';
+  action: FashAction;
   timestamp: number;
   details: string;
 }

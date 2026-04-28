@@ -13,6 +13,12 @@ import {
   StatusCommand,
   LogCommand,
   RekeyCommand,
+  VerifyCommand,
+  DiffCommand,
+  ExportCommand,
+  ImportCommand,
+  ResetCommand,
+  DestroyCommand,
 } from './commands/index.js';
 
 // Read version from package.json
@@ -35,6 +41,12 @@ program.addCommand(ShowCommand());
 program.addCommand(CommitCommand());
 program.addCommand(UndoCommand());
 program.addCommand(RekeyCommand());
+program.addCommand(VerifyCommand());
+program.addCommand(DiffCommand());
+program.addCommand(ExportCommand());
+program.addCommand(ImportCommand());
+program.addCommand(ResetCommand());
+program.addCommand(DestroyCommand());
 program.addCommand(LogCommand());
 
 // Parse arguments

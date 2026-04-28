@@ -14,13 +14,23 @@ export class MappingManager {
     this.configManager = configManager;
   }
 
-  async createMapping(projectRoot: string): Promise<FashMap> {
+  async createMapping(projectRoot: string, includePatterns?: string[]): Promise<FashMap> {
     const config = await this.configManager.loadConfig();
     const mappings: FileMapping[] = [];
 
-    // Get all files and directories
-    const files = await FileSystemUtils.getFilesRecursively(projectRoot, config.exclude || []);
-    const directories = await FileSystemUtils.getDirectoriesRecursively(projectRoot, config.exclude || []);
+    let files = await FileSystemUtils.getFilesRecursively(projectRoot, config.exclude || []);
+    let directories = await FileSystemUtils.getDirectoriesRecursively(projectRoot, config.exclude || []);
+
+    if (includePatterns && includePatterns.length > 0) {
+      const matchesInclude = (filePath: string): boolean => {
+        return includePatterns.some((pattern) => {
+          const regex = new RegExp(pattern.replace(/\*/g, '.*'));
+          return regex.test(filePath) || regex.test(path.basename(filePath));
+        });
+      };
+      files = files.filter(matchesInclude);
+      directories = directories.filter(matchesInclude);
+    }
 
     // Maps original directory path -> fully resolved hashed path
     const directoryRenames = new Map<string, string>();
