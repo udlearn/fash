@@ -13,7 +13,7 @@ digest while preserving the directory tree and all file contents.
 ## Installation
 
 ```bash
-npm install -g fash
+npm install -g @udlearn/fash
 ```
 
 Requires **Node.js >= 22**.

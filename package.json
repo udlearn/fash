@@ -7,13 +7,18 @@
   "license": "MIT",
   "main": "dist/index.js",
   "files": ["dist"],
-  "repository": "udlearn/fash",
+  "repository": "https://github.com/udlearn/fash",
+  "publishConfig": {
+    "access": "public"
+  },
   "keywords": [
     "cli",
     "security",
     "hashing",
-    "file-encryption",
-    "obfuscation"
+    "obfuscation",
+    "filename",
+    "privacy",
+    "directories"
   ],
   "bin": {
     "fash": "dist/index.js"
