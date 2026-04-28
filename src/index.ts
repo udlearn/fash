@@ -12,6 +12,7 @@ import {
   UndoCommand,
   StatusCommand,
   LogCommand,
+  RekeyCommand,
 } from './commands/index.js';
 
 // Read version from package.json
@@ -33,6 +34,7 @@ program.addCommand(StatusCommand());
 program.addCommand(ShowCommand());
 program.addCommand(CommitCommand());
 program.addCommand(UndoCommand());
+program.addCommand(RekeyCommand());
 program.addCommand(LogCommand());
 
 // Parse arguments

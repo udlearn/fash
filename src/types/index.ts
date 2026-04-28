@@ -19,7 +19,7 @@ export interface FashMap {
 }
 
 export interface FashLog {
-  action: 'init' | 'config' | 'show' | 'commit' | 'undo' | 'status' | 'log';
+  action: 'init' | 'config' | 'show' | 'commit' | 'undo' | 'status' | 'log' | 'rekey';
   timestamp: number;
   details: string;
 }

@@ -11,6 +11,7 @@ const ACTION_COLORS: Record<FashLog['action'], (text: string) => string> = {
   undo: chalk.magenta,
   status: chalk.cyan,
   log: chalk.gray,
+  rekey: chalk.red,
 };
 
 export function createLogCommand(): Command {

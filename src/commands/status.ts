@@ -61,7 +61,9 @@ export function createStatusCommand(): Command {
           return;
         }
 
-        console.log(chalk.gray(`${dirs.length} director${dirs.length === 1 ? 'y' : 'ies'}, ${files.length} file${files.length === 1 ? '' : 's'} would be renamed`));
+        const dirLabel = `${dirs.length} director${dirs.length === 1 ? 'y' : 'ies'}`;
+        const fileLabel = `${files.length} file${files.length === 1 ? '' : 's'}`;
+        console.log(chalk.gray(`${dirLabel}, ${fileLabel} would be renamed`));
         console.log(chalk.gray(`Algorithm: ${fashMap.config.algorithm}`));
 
         if (fashMap.config.exclude && fashMap.config.exclude.length > 0) {
